@@ -1,0 +1,32 @@
+using System;
+using CybersecurityAwarenessBot.Models;
+using CybersecurityAwarenessBot.Services;
+
+namespace CybersecurityAwarenessBot
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Title = "Cybersecurity Awareness Bot";
+            Console.WindowWidth = 100;
+            Console.WindowHeight = 40;
+
+            // 1. Voice Greeting
+            AudioService.PlayVoiceGreeting();
+
+            // 2. Display ASCII Art
+            UIService.DisplayAsciiArt();
+
+            // 3. Create bot instance and get user name
+            ChatBot bot = new ChatBot();
+            string userName = UIService.GetUserName();
+
+            // 4. Display personalised welcome
+            UIService.DisplayWelcomeMessage(userName, bot.GetBotName());
+
+            // 5. Start chat loop
+            bot.StartChat(userName);
+        }
+    }
+}

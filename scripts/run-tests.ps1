@@ -1,0 +1,18 @@
+# Run tests using the dotnet CLI
+Param(
+    [string]$Configuration = "Debug",
+    [string]$Framework = "net8.0"
+)
+$proj = "tests/CyberAwarenessBot.Tests/CyberAwarenessBot.Tests.csproj"
+# Verify .NET 8 is installed
+$verify = Join-Path $PSScriptRoot 'verify-dotnet.ps1'
+if (-not (Test-Path $verify)) {
+    Write-Error "Verification script missing: $verify"
+    exit 1
+}
+Write-Host "Verifying .NET 8 runtime..."
+& $verify
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Write-Host "Running: dotnet test $proj -c $Configuration -f $Framework"
+dotnet test $proj -c $Configuration -f $Framework

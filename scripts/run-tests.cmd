@@ -1,0 +1,18 @@
+@echo off
+set CONFIG=Debug
+set FRAMEWORK=net8.0
+set PROJ=tests\CyberAwarenessBot.Tests\CyberAwarenessBot.Tests.csproj
+set SCRIPTDIR=%~dp0
+if exist "%SCRIPTDIR%verify-dotnet.cmd" (
+  call "%SCRIPTDIR%verify-dotnet.cmd"
+  if errorlevel 1 (
+    echo Verification failed. Aborting.
+    exit /b 1
+  )
+) else (
+  echo Verification script missing: %SCRIPTDIR%verify-dotnet.cmd
+  exit /b 1
+)
+echo Running: dotnet test %PROJ% -c %CONFIG% -f %FRAMEWORK%
+dotnet test %PROJ% -c %CONFIG% -f %FRAMEWORK%
+pause
