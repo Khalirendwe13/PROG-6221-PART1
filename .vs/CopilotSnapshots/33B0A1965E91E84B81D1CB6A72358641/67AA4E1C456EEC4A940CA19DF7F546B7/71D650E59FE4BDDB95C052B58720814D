@@ -1,0 +1,240 @@
+﻿using System;
+using System.IO;
+using System.Reflection;
+
+namespace CyberAwarenessBot
+{
+    public static class VoiceGreetingGenerator
+    {
+        /// <summary>
+        /// Attempt to synthesise a WAV voice greeting using System.Speech.Synthesis via reflection.
+        /// If System.Speech is not available, falls back to creating a silent WAV.
+        /// This approach avoids a compile-time dependency on System.Speech.
+        /// </summary>
+        /// <param name="voiceName">Optional preferred installed voice name, e.g. "Microsoft Zira Desktop".</param>
+        public static void EnsureVoiceGreetingExists(string path, string text, int secondsFallback = 1, string? voiceName = "Microsoft Zira Desktop")
+        {
+            try
+            {
+                var file = new FileInfo(path);
+                if (file.Exists && file.Length > 44) return; // likely valid
+                // Try to load System.Speech assembly (Windows desktop).
+                Assembly? asm = null;
+                try
+                {
+                    asm = Assembly.Load("System.Speech");
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                // Allow persisted choice: if a voice config exists, use it as preferred voice name.
+                try
+                {
+                    var cfgDir = Path.GetDirectoryName(path) ?? "assets";
+                    var cfgPath = Path.Combine(cfgDir, "voice.config");
+                    if (File.Exists(cfgPath))
+                    {
+                        var persisted = File.ReadAllText(cfgPath).Trim();
+                        if (!string.IsNullOrWhiteSpace(persisted))
+                        {
+                            voiceName = persisted;
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore config read errors
+                }
+
+                if (asm != null)
+                {
+                    var synthType = asm.GetType("System.Speech.Synthesis.SpeechSynthesizer");
+                    if (synthType != null)
+                    {
+                        object? synth = null;
+                        try
+                        {
+                            synth = Activator.CreateInstance(synthType);
+                            if (synth != null)
+                            {
+                                var selectVoice = synthType.GetMethod("SelectVoice", new Type[] { typeof(string) });
+                                var setOutput = synthType.GetMethod("SetOutputToWaveFile", new Type[] { typeof(string) });
+                                var speak = synthType.GetMethod("Speak", new Type[] { typeof(string) });
+
+                                // Try explicit preferred voice first
+                                bool voiceSelected = false;
+                                if (!string.IsNullOrWhiteSpace(voiceName) && selectVoice != null)
+                                {
+                                    try
+                                    {
+                                        selectVoice.Invoke(synth, new object[] { voiceName });
+                                        voiceSelected = true;
+                                    }
+                                    catch
+                                    {
+                                        voiceSelected = false;
+                                    }
+                                }
+
+                                // If not selected, probe installed voices and pick the first from candidates
+                                if (!voiceSelected)
+                                {
+                                    var getInstalled = synthType.GetMethod("GetInstalledVoices", Type.EmptyTypes);
+                                    var voices = getInstalled?.Invoke(synth, null) as System.Collections.IEnumerable;
+                                    if (voices != null)
+                                    {
+                                        // Candidate preference order
+                                        var candidates = new[] { "Microsoft Zira Desktop", "Microsoft David Desktop" };
+                                        string? chosen = null;
+                                        foreach (var v in voices)
+                                        {
+                                            var vType = v.GetType();
+                                            var voiceInfoProp = vType.GetProperty("VoiceInfo");
+                                            var voiceInfo = voiceInfoProp?.GetValue(v);
+                                            var infoType = voiceInfo?.GetType();
+                                            var nameProp = infoType?.GetProperty("Name");
+                                            var name = nameProp?.GetValue(voiceInfo) as string;
+                                            if (string.IsNullOrWhiteSpace(name)) continue;
+                                            foreach (var c in candidates)
+                                            {
+                                                if (string.Equals(name, c, StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    chosen = name;
+                                                    break;
+                                                }
+                                            }
+                                            if (chosen != null) break;
+                                        }
+
+                                        if (chosen != null && selectVoice != null)
+                                        {
+                                            try
+                                            {
+                                                selectVoice.Invoke(synth, new object[] { chosen });
+                                                voiceName = chosen; // persist later
+                                                voiceSelected = true;
+                                            }
+                                            catch
+                                            {
+                                                // ignore
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Speak to WAV if possible
+                                try
+                                {
+                                    setOutput?.Invoke(synth, new object[] { path });
+                                    speak?.Invoke(synth, new object[] { text });
+                                }
+                                catch
+                                {
+                                    // ignore speak errors
+                                }
+
+                                // if file created, persist chosen voice name for future runs
+                                var created = new FileInfo(path);
+                                if (created.Exists && created.Length > 44)
+                                {
+                                    try
+                                    {
+                                        var cfgDir = Path.GetDirectoryName(path) ?? "assets";
+                                        Directory.CreateDirectory(cfgDir);
+                                        var cfgPath = Path.Combine(cfgDir, "voice.config");
+                                        if (!string.IsNullOrWhiteSpace(voiceName))
+                                        {
+                                            File.WriteAllText(cfgPath, voiceName);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        // ignore write errors
+                                    }
+
+                                    return;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            if (synth is IDisposable d) d.Dispose();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore and fall back
+            }
+
+            // Fallback: create a short silent WAV so playback is safe
+            GreetingGenerator.EnsureGreetingFileExists(path, secondsFallback);
+        }
+
+        /// <summary>
+        /// List installed voices (if System.Speech is available). Writes voice names to the console.
+        /// This uses reflection so the project does not require System.Speech at compile time.
+        /// </summary>
+        public static void ListInstalledVoices()
+        {
+            try
+            {
+                var asm = Assembly.Load("System.Speech");
+                if (asm == null)
+                {
+                    Console.WriteLine("System.Speech assembly not available on this platform.");
+                    return;
+                }
+
+                var synthType = asm.GetType("System.Speech.Synthesis.SpeechSynthesizer");
+                if (synthType == null)
+                {
+                    Console.WriteLine("SpeechSynthesizer type not found.");
+                    return;
+                }
+
+                var synth = Activator.CreateInstance(synthType);
+                if (synth == null)
+                {
+                    Console.WriteLine("Could not create SpeechSynthesizer instance.");
+                    return;
+                }
+
+                var getInstalled = synthType.GetMethod("GetInstalledVoices", Type.EmptyTypes);
+                var voices = getInstalled?.Invoke(synth, null) as System.Collections.IEnumerable;
+                if (voices == null)
+                {
+                    // Dispose if possible before returning
+                    if (synth is IDisposable d) d.Dispose();
+                    Console.WriteLine("No installed voices discovered.");
+                    return;
+                }
+
+                Console.WriteLine("Installed voices:");
+                foreach (var v in voices)
+                {
+                    // Each item has a VoiceInfo property with Name
+                    var vType = v.GetType();
+                    var voiceInfoProp = vType.GetProperty("VoiceInfo");
+                    var voiceInfo = voiceInfoProp?.GetValue(v);
+                    var infoType = voiceInfo?.GetType();
+                    var nameProp = infoType?.GetProperty("Name");
+                    var name = nameProp?.GetValue(voiceInfo) as string;
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        Console.WriteLine($" - {name}");
+                    }
+                }
+
+                if (synth is IDisposable disp) disp.Dispose();
+            }
+            catch
+            {
+                Console.WriteLine("Unable to list installed voices on this platform.");
+            }
+        }
+    }
+}

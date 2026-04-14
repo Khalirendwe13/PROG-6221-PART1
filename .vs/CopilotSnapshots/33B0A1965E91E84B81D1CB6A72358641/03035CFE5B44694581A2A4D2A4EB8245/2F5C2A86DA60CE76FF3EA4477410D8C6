@@ -1,0 +1,46 @@
+﻿# Cybersecurity Awareness Bot (Console)
+
+Overview
+
+This is a simple C# console chatbot that provides basic cybersecurity guidance. It includes:
+- A voice greeting (WAV) played on startup if an audio file is present.
+- ASCII-art header and coloured console UI.
+- Personalised conversation using the user's name (automatic properties used in Bot.cs).
+- Basic responses about password safety, phishing, and safe browsing.
+- Input validation and graceful fallbacks.
+
+Getting started
+
+Requirements
+- .NET 6.0 SDK or later
+
+Build and run
+
+1. Open a terminal in the repository root.
+2. Build: dotnet build src/CyberAwarenessBot
+3. Run: dotnet run --project src/CyberAwarenessBot
+
+Adding the voice greeting
+
+Place a WAV file at assets/greeting.wav (path relative to the executable). The program will attempt to play it on startup. If not present, it will continue silently.
+
+Project structure
+
+- src/CyberAwarenessBot: main project
+- assets: place audio file here (not included in repo by default)
+
+Notes for instructors
+
+This project demonstrates:
+- Console I/O and validation
+- String manipulation and simple NLP-style matching
+- Use of automatic properties
+- Separation of concerns using classes and helper methods
+
+GitHub Actions
+
+A basic workflow file is provided to build the project on each push.
+
+License
+
+This project is provided as-is for educational purposes.

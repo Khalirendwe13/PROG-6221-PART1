@@ -1,0 +1,80 @@
+﻿using System;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            ConsoleUI.ClearAndDrawHeader();
+            await VoiceGreetingHandler.PlayGreetingAsync("assets/greeting.wav");
+
+            ConsoleUI.WriteColoredLine("Welcome to the Cybersecurity Awareness Bot!", ConsoleColor.Cyan);
+            ConsoleUI.WriteColoredLine("Type 'help' to see available runtime commands.", ConsoleColor.DarkCyan);
+            ConsoleUI.WriteColoredLine("Please enter your name:", ConsoleColor.Yellow);
+
+            string? name = ConsoleUI.ReadNonEmptyLine("Name");
+            var bot = new Bot { UserName = name };
+
+            ConsoleUI.TypeWrite($"Hello {bot.UserName}! I'm your Cybersecurity Awareness assistant.\n", 25);
+            ConsoleUI.WriteDivider();
+
+            string topicResponse = string.Empty;
+            while (true)
+            {
+                ConsoleUI.WriteColoredLine("Choose a topic to learn about:", ConsoleColor.Green);
+                ConsoleUI.WriteColoredLine("  1. Password Safety", ConsoleColor.Yellow);
+                ConsoleUI.WriteColoredLine("  2. Phishing", ConsoleColor.Yellow);
+                ConsoleUI.WriteColoredLine("  3. Safe Browsing", ConsoleColor.Yellow);
+                ConsoleUI.WriteColoredLine("Enter the number of your choice:", ConsoleColor.Cyan);
+
+                string? topicChoice = Console.ReadLine();
+                if (topicChoice == "1")
+                {
+                    topicResponse = bot.GetResponse("password", out _);
+                    break;
+                }
+                else if (topicChoice == "2")
+                {
+                    topicResponse = bot.GetResponse("phishing", out _);
+                    break;
+                }
+                else if (topicChoice == "3")
+                {
+                    topicResponse = bot.GetResponse("safe browsing", out _);
+                    break;
+                }
+                else
+                {
+                    ConsoleUI.WriteColoredLine("Invalid choice. Please enter 1, 2, or 3.", ConsoleColor.Red);
+                }
+            }
+            ConsoleUI.TypeWrite(topicResponse + "\n", 18);
+            ConsoleUI.WriteDivider();
+
+            bool running = true;
+            while (running)
+            {
+                ConsoleUI.WriteColoredLine("Ask me a question (or type 'exit' to quit):", ConsoleColor.Green);
+                string input = Console.ReadLine()?.Trim() ?? "";
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                    continue;
+                }
+
+                if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                {
+                    running = false;
+                    ConsoleUI.TypeWrite("Goodbye! Stay safe online.\n", 20);
+                    continue;
+                }
+
+                string response = bot.GetResponse(input);
+                ConsoleUI.TypeWrite(response + "\n", 18);
+            }
+        }
+    }
+}

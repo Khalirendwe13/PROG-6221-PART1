@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\CyberAwarenessBot",
+    "\\src\\CyberAwarenessBot\\assets",
+    "\\tests",
+    "\\tests\\CyberAwarenessBot.Tests"
+  ],
+  "SelectedNode": "\\src\\CyberAwarenessBot\\GreetingGenerator.cs",
+  "PreviewInSolutionExplorer": false
+}

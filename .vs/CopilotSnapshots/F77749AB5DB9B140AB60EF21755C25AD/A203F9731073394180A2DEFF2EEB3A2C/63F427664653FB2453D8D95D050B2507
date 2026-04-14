@@ -1,0 +1,313 @@
+﻿using System;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            ConsoleUI.ClearAndDrawHeader();
+            
+            // Enable voice responses flag
+            bool enableVoiceResponses = true;
+
+            // Support command-line flags
+            if (args != null && args.Length > 0)
+            {
+                foreach (var a in args)
+                {
+                    if (a.Equals("--list-voices", StringComparison.OrdinalIgnoreCase) || a.Equals("-l", StringComparison.OrdinalIgnoreCase))
+                    {
+                        VoiceGreetingGenerator.ListInstalledVoices();
+                        return;
+                    }
+                    if (a.Equals("--choose-voice", StringComparison.OrdinalIgnoreCase) || a.Equals("-c", StringComparison.OrdinalIgnoreCase))
+                    {
+                        VoiceGreetingGenerator.ListInstalledVoices();
+                        ConsoleUI.WriteColoredLine("Enter the exact voice name to save (or press Enter to cancel):", ConsoleColor.Yellow);
+                        string? manual = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(manual))
+                        {
+                            try
+                            {
+                                System.IO.Directory.CreateDirectory("assets");
+                                System.IO.File.WriteAllText(System.IO.Path.Combine("assets", "voice.config"), manual.Trim());
+                                ConsoleUI.WriteColoredLine($"Saved voice: {manual.Trim()}", ConsoleColor.Cyan);
+                            }
+                            catch
+                            {
+                                ConsoleUI.WriteColoredLine("Failed to save voice configuration.", ConsoleColor.Red);
+                            }
+                        }
+                        return;
+                    }
+                    if (a.Equals("--no-voice", StringComparison.OrdinalIgnoreCase))
+                    {
+                        enableVoiceResponses = false;
+                    }
+                }
+            }
+
+            // Setup voice and speech recognition
+            SpeechRecognitionHandler.Initialize();
+            
+            string assetsDir = "assets";
+            string cfgPath = System.IO.Path.Combine(assetsDir, "voice.config");
+            string? chosenVoice = null;
+            
+            if (!System.IO.File.Exists(cfgPath))
+            {
+                var probe = VoiceGreetingGenerator.ProbePreferredVoice("Microsoft Zira Desktop");
+                if (!string.IsNullOrWhiteSpace(probe))
+                {
+                    ConsoleUI.WriteColoredLine($"Detected voice: {probe}", ConsoleColor.Yellow);
+                    ConsoleUI.WriteColoredLine($"Use this voice for greetings and responses? (Y/n)", ConsoleColor.Yellow);
+                    string? ans = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(ans) || ans.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        chosenVoice = probe;
+                        try
+                        {
+                            System.IO.Directory.CreateDirectory(assetsDir);
+                            System.IO.File.WriteAllText(cfgPath, chosenVoice);
+                        }
+                        catch
+                        {
+                            // ignore write errors
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUI.WriteColoredLine("Would you like to list installed voices to choose a different one? (y/N)", ConsoleColor.Yellow);
+                        string? listAns = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(listAns) && listAns.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                        {
+                            VoiceGreetingGenerator.ListInstalledVoices();
+                            ConsoleUI.WriteColoredLine("Enter the exact voice name to use (or press Enter to skip):", ConsoleColor.Yellow);
+                            string? manual = Console.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(manual))
+                            {
+                                chosenVoice = manual.Trim();
+                                try
+                                {
+                                    System.IO.Directory.CreateDirectory(assetsDir);
+                                    System.IO.File.WriteAllText(cfgPath, chosenVoice);
+                                }
+                                catch
+                                {
+                                    // ignore
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    chosenVoice = System.IO.File.ReadAllText(cfgPath).Trim();
+                }
+                catch
+                {
+                    // ignore read errors
+                }
+            }
+
+            // Set the preferred voice for responses
+            if (!string.IsNullOrWhiteSpace(chosenVoice))
+            {
+                VoiceResponseHandler.SetPreferredVoice(chosenVoice);
+            }
+
+            VoiceGreetingGenerator.EnsureVoiceGreetingExists(
+                "assets/greeting.wav",
+                "Hello! Welcome to the cybersecurity awareness bot",
+                voiceName: chosenVoice ?? "Microsoft Zira Desktop");
+
+            await ConsoleUI.TryPlayGreetingAsync("assets/greeting.wav");
+
+            ConsoleUI.WriteColoredLine("Welcome to the Cybersecurity Awareness Bot!", ConsoleColor.Cyan);
+            ConsoleUI.WriteColoredLine("Type 'help' to see available runtime commands.", ConsoleColor.DarkCyan);
+            ConsoleUI.WriteColoredLine("Please enter your name:", ConsoleColor.Yellow);
+
+            string? name = ConsoleUI.ReadNonEmptyLine("Name");
+            var bot = new Bot { UserName = name };
+
+            ConsoleUI.TypeWrite($"Hello {bot.UserName}! I'm your Cybersecurity Awareness assistant.\n", 25);
+            
+            // Play voice greeting
+            if (enableVoiceResponses)
+            {
+                await VoiceResponseHandler.SynthesizeAndPlayResponseAsync(
+                    $"Hello {bot.UserName}! I'm your Cybersecurity Awareness assistant.", 
+                    enableVoiceResponses);
+            }
+            
+            ConsoleUI.WriteDivider();
+
+            bool running = true;
+            while (running)
+            {
+                ConsoleUI.WriteColoredLine("Ask me a question (or type 'exit' to quit):", ConsoleColor.Green);
+                ConsoleUI.WriteColoredLine("[Type your question or 'voice' to speak]", ConsoleColor.DarkGreen);
+                
+                string? input = Console.ReadLine();
+
+                // Voice input option
+                if (!string.IsNullOrWhiteSpace(input) && input.Trim().Equals("voice", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (SpeechRecognitionHandler.IsAvailable)
+                    {
+                        input = await SpeechRecognitionHandler.RecognizeSpeechAsync(5);
+                        if (string.IsNullOrWhiteSpace(input))
+                        {
+                            ConsoleUI.WriteColoredLine("Could not recognize speech. Please try typing instead.", ConsoleColor.Yellow);
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUI.WriteColoredLine("Voice recognition is not available on this system.", ConsoleColor.Yellow);
+                        continue;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                    continue;
+                }
+
+                input = input.Trim();
+
+                // Help / commands
+                if (input.Equals("help", StringComparison.OrdinalIgnoreCase) || input.Equals("commands", StringComparison.OrdinalIgnoreCase) || input.Equals("?", StringComparison.OrdinalIgnoreCase))
+                {
+                    ConsoleUI.WriteColoredLine("Available runtime commands:", ConsoleColor.Cyan);
+                    Console.WriteLine(" - help / commands / ? : show this help");
+                    Console.WriteLine(" - voice : speak your question instead of typing");
+                    Console.WriteLine(" - change voice / voice config : list voices and change the voice");
+                    Console.WriteLine(" - toggle voice : enable/disable voice responses");
+                    Console.WriteLine(" - record greeting : record your own voice greeting");
+                    Console.WriteLine(" - exit / quit : exit the application");
+                    Console.WriteLine(" - You can also type cybersecurity questions like 'password' or 'phishing' to get advice.");
+                    ConsoleUI.WriteDivider();
+                    continue;
+                }
+
+                // Runtime command: change voice without restarting
+                if (input.Equals("change voice", StringComparison.OrdinalIgnoreCase) || input.Equals("voice config", StringComparison.OrdinalIgnoreCase) || input.Equals("/voice", StringComparison.OrdinalIgnoreCase))
+                {
+                    VoiceGreetingGenerator.ListInstalledVoices();
+                    ConsoleUI.WriteColoredLine("Enter the exact voice name to save (or press Enter to cancel):", ConsoleColor.Yellow);
+                    string? manual = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(manual))
+                    {
+                        try
+                        {
+                            System.IO.Directory.CreateDirectory("assets");
+                            System.IO.File.WriteAllText(System.IO.Path.Combine("assets", "voice.config"), manual.Trim());
+                            ConsoleUI.WriteColoredLine($"Saved voice: {manual.Trim()}", ConsoleColor.Cyan);
+                            VoiceResponseHandler.SetPreferredVoice(manual.Trim());
+
+                            VoiceGreetingGenerator.EnsureVoiceGreetingExists("assets/greeting.wav", $"Hello {bot.UserName}! Welcome back to the Cybersecurity Awareness Bot.", voiceName: manual.Trim());
+                            await ConsoleUI.TryPlayGreetingAsync("assets/greeting.wav");
+                        }
+                        catch
+                        {
+                            ConsoleUI.WriteColoredLine("Failed to save or generate the greeting.", ConsoleColor.Red);
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUI.WriteColoredLine("Voice change cancelled.", ConsoleColor.DarkYellow);
+                    }
+
+                    ConsoleUI.WriteDivider();
+                    continue;
+                }
+
+                // Record custom voice greeting
+                if (input.Equals("record greeting", StringComparison.OrdinalIgnoreCase) || input.Equals("/record", StringComparison.OrdinalIgnoreCase))
+                {
+                    ConsoleUI.WriteColoredLine("Recording your custom greeting...", ConsoleColor.Yellow);
+                    ConsoleUI.WriteColoredLine("Speak your greeting message (5 seconds):", ConsoleColor.Yellow);
+                    
+                    string recordingPath = System.IO.Path.Combine("assets", "custom_greeting.wav");
+                    bool recordingSuccess = await VoiceRecordingHandler.RecordVoiceAsync(recordingPath, 5);
+                    
+                    if (recordingSuccess)
+                    {
+                        ConsoleUI.WriteColoredLine("Recording successful! Playing back your greeting...", ConsoleColor.Green);
+                        await VoiceRecordingHandler.PlayRecordedVoiceAsync(recordingPath);
+                        ConsoleUI.WriteColoredLine("Would you like to use this as your greeting? (y/N)", ConsoleColor.Yellow);
+                        string? useAns = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(useAns) && useAns.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                        {
+                            try
+                            {
+                                System.IO.File.Copy(recordingPath, System.IO.Path.Combine("assets", "greeting.wav"), true);
+                                ConsoleUI.WriteColoredLine("Your custom greeting has been saved!", ConsoleColor.Cyan);
+                            }
+                            catch
+                            {
+                                ConsoleUI.WriteColoredLine("Failed to save custom greeting.", ConsoleColor.Red);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUI.WriteColoredLine("Recording failed. Voice recording may not be available on this system.", ConsoleColor.Red);
+                    }
+
+                    ConsoleUI.WriteDivider();
+                    continue;
+                }
+
+                // Toggle voice responses
+                if (input.Equals("toggle voice", StringComparison.OrdinalIgnoreCase))
+                {
+                    enableVoiceResponses = !enableVoiceResponses;
+                    ConsoleUI.WriteColoredLine($"Voice responses: {(enableVoiceResponses ? "ENABLED" : "DISABLED")}", ConsoleColor.Cyan);
+                    ConsoleUI.WriteDivider();
+                    continue;
+                }
+
+                if (input.Equals("exit", StringComparison.OrdinalIgnoreCase) || input.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                {
+                    running = false;
+                    string goodbyeMsg = "Goodbye! Stay safe online.";
+                    ConsoleUI.TypeWrite(goodbyeMsg + "\n", 20);
+                    if (enableVoiceResponses)
+                    {
+                        await VoiceResponseHandler.SynthesizeAndPlayResponseAsync(goodbyeMsg, enableVoiceResponses);
+                    }
+                    continue;
+                }
+
+                string response = bot.GetResponse(input, out bool handled);
+                if (!handled)
+                {
+                    string errorMsg = "I didn't quite understand that. Could you rephrase?";
+                    ConsoleUI.WriteColoredLine(errorMsg, ConsoleColor.Red);
+                    if (enableVoiceResponses)
+                    {
+                        await VoiceResponseHandler.SynthesizeAndPlayResponseAsync(errorMsg, enableVoiceResponses);
+                    }
+                }
+                else
+                {
+                    await ConsoleUI.TypeWriteAsync(response + "\n", 18);
+                    if (enableVoiceResponses)
+                    {
+                        await VoiceResponseHandler.SynthesizeAndPlayResponseAsync(response, enableVoiceResponses);
+                    }
+                }
+
+                ConsoleUI.WriteDivider();
+            }
+        }
+    }
+}

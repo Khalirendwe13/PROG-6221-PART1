@@ -1,0 +1,19 @@
+﻿<Project>
+  <Target Name="EnsureDotnet8Installed" BeforeTargets="Build;Test">
+    <!-- Try Windows findstr -->
+    <Exec Command="dotnet --list-runtimes | findstr /R &quot;Microsoft\.NETCore\.App 8\.&quot;" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="Dotnet8FoundExitCodeWindows" />
+    </Exec>
+    <!-- Try Unix grep -->
+    <Exec Command="dotnet --list-runtimes | grep -E &quot;Microsoft\.NETCore\.App\s+8\.&quot;" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="Dotnet8FoundExitCodeUnix" />
+    </Exec>
+
+    <PropertyGroup>
+      <Dotnet8Found Condition="'$(Dotnet8FoundExitCodeWindows)' == '0' or '$(Dotnet8FoundExitCodeUnix)' == '0'">true</Dotnet8Found>
+    </PropertyGroup>
+
+    <Error Condition="'$(Dotnet8Found)' != 'true' and '$(TargetFramework)' == 'net8.0'"
+           Text="Required .NET 8 runtime not found. Run 'dotnet --list-runtimes' to see installed runtimes or install the .NET 8 runtime/SDK." />
+  </Target>
+</Project>

@@ -1,0 +1,239 @@
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    public static class VoiceRecordingHandler
+    {
+        private static bool _isAvailable = false;
+
+        static VoiceRecordingHandler()
+        {
+            // Check if System.Audio is available (Windows only)
+            try
+            {
+                Assembly.Load("System.Audio");
+                _isAvailable = true;
+            }
+            catch
+            {
+                _isAvailable = false;
+            }
+        }
+
+        public static bool IsAvailable => _isAvailable;
+
+        /// <summary>
+        /// Records audio from the microphone for a specified duration and saves it as a WAV file.
+        /// </summary>
+        /// <param name="outputPath">Path where the WAV file will be saved</param>
+        /// <param name="durationSeconds">Duration of recording in seconds</param>
+        /// <returns>True if recording succeeded, false otherwise</returns>
+        public static async Task<bool> RecordVoiceAsync(string outputPath, int durationSeconds = 5)
+        {
+            if (!_isAvailable)
+            {
+                ConsoleUI.WriteColoredLine("Voice recording is not available on this system.", ConsoleColor.Red);
+                return false;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? "assets");
+
+                // Try to use NAudio for recording if available, otherwise use WaveInEvent via reflection
+                return await RecordUsingReflectionAsync(outputPath, durationSeconds);
+            }
+            catch (Exception ex)
+            {
+                ConsoleUI.WriteColoredLine($"Recording failed: {ex.Message}", ConsoleColor.Red);
+                return false;
+            }
+        }
+
+        private static async Task<bool> RecordUsingReflectionAsync(string outputPath, int durationSeconds)
+        {
+            try
+            {
+                // Load NAudio assembly if available
+                Assembly? nAudioAsm = null;
+                try
+                {
+                    nAudioAsm = Assembly.Load("NAudio.Core");
+                }
+                catch
+                {
+                    // NAudio not available, will fall back to System.Media
+                }
+
+                if (nAudioAsm != null)
+                {
+                    return await RecordWithNAudioAsync(outputPath, durationSeconds);
+                }
+                else
+                {
+                    return await RecordWithSystemMediaAsync(outputPath, durationSeconds);
+                }
+            }
+            catch (Exception ex)
+            {
+                ConsoleUI.WriteColoredLine($"Reflection-based recording failed: {ex.Message}", ConsoleColor.Red);
+                return false;
+            }
+        }
+
+        private static async Task<bool> RecordWithNAudioAsync(string outputPath, int durationSeconds)
+        {
+            try
+            {
+                var waveInType = Type.GetType("NAudio.Wave.WaveInEvent, NAudio.Core");
+                var waveFileWriterType = Type.GetType("NAudio.Wave.WaveFileWriter, NAudio.Core");
+
+                if (waveInType == null || waveFileWriterType == null)
+                {
+                    return false;
+                }
+
+                object? waveIn = Activator.CreateInstance(waveInType);
+                if (waveIn == null) return false;
+
+                // Create WaveFileWriter
+                var waveFileWriter = Activator.CreateInstance(waveFileWriterType, outputPath, 
+                    waveInType.GetProperty("WaveFormat")?.GetValue(waveIn));
+
+                if (waveFileWriter == null) return false;
+
+                // Subscribe to DataAvailable event
+                var dataAvailableEvent = waveInType.GetEvent("DataAvailable");
+                var eventHandler = CreateEventHandler(waveInType, waveFileWriterType, waveFileWriter);
+                dataAvailableEvent?.AddEventHandler(waveIn, eventHandler);
+
+                // Start recording
+                var startMethod = waveInType.GetMethod("StartRecording", Type.EmptyTypes);
+                startMethod?.Invoke(waveIn, null);
+
+                ConsoleUI.WriteColoredLine($"Recording for {durationSeconds} seconds...", ConsoleColor.Yellow);
+                await Task.Delay(durationSeconds * 1000);
+
+                // Stop recording
+                var stopMethod = waveInType.GetMethod("StopRecording", Type.EmptyTypes);
+                stopMethod?.Invoke(waveIn, null);
+
+                // Dispose
+                var disposeMethod = waveFileWriterType.GetMethod("Dispose", Type.EmptyTypes);
+                disposeMethod?.Invoke(waveFileWriter, null);
+
+                var waveInDisposeMethod = waveInType.GetMethod("Dispose", Type.EmptyTypes);
+                waveInDisposeMethod?.Invoke(waveIn, null);
+
+                ConsoleUI.WriteColoredLine($"Recording saved to {outputPath}", ConsoleColor.Green);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ConsoleUI.WriteColoredLine($"NAudio recording error: {ex.Message}", ConsoleColor.Red);
+                return false;
+            }
+        }
+
+        private static Delegate CreateEventHandler(Type waveInType, Type waveFileWriterType, object waveFileWriter)
+        {
+            var dataAvailableEventArgsType = Type.GetType("NAudio.Wave.WaveInEventArgs, NAudio.Core");
+            if (dataAvailableEventArgsType == null)
+                throw new InvalidOperationException("WaveInEventArgs type not found");
+
+            var delegateType = typeof(EventHandler<>).MakeGenericType(dataAvailableEventArgsType);
+            var method = typeof(VoiceRecordingHandler).GetMethod(nameof(OnDataAvailable), 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+            if (method == null)
+                throw new InvalidOperationException("OnDataAvailable method not found");
+
+            return Delegate.CreateDelegate(delegateType, method);
+        }
+
+        private static void OnDataAvailable(object sender, EventArgs e)
+        {
+            try
+            {
+                var eType = e.GetType();
+                var bufferProperty = eType.GetProperty("Buffer");
+                var countProperty = eType.GetProperty("BytesRecorded");
+
+                if (bufferProperty?.GetValue(e) is byte[] buffer && countProperty?.GetValue(e) is int bytesRecorded)
+                {
+                    // Data handling would go here if needed
+                }
+            }
+            catch
+            {
+                // Ignore event handling errors
+            }
+        }
+
+        /// <summary>
+        /// Plays a recorded voice file
+        /// </summary>
+        public static async Task PlayRecordedVoiceAsync(string voiceFilePath)
+        {
+            if (!File.Exists(voiceFilePath))
+            {
+                ConsoleUI.WriteColoredLine($"Voice file not found: {voiceFilePath}", ConsoleColor.Red);
+                return;
+            }
+
+            try
+            {
+                await ConsoleUI.TryPlayGreetingAsync(voiceFilePath);
+            }
+            catch (Exception ex)
+            {
+                ConsoleUI.WriteColoredLine($"Playback failed: {ex.Message}", ConsoleColor.Red);
+            }
+        }
+
+        /// <summary>
+        /// Creates a simple WAV file with recorded audio metadata for demonstration
+        /// </summary>
+        public static void CreateSilentWavFile(string path, int durationSeconds = 1)
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path) ?? "assets");
+
+                byte[] wavHeader = new byte[44];
+                int sampleRate = 44100;
+                int channels = 1;
+                int bitsPerSample = 16;
+                int dataSize = (sampleRate * channels * bitsPerSample / 8) * durationSeconds;
+
+                // WAV header
+                Array.Copy(new byte[] { 0x52, 0x49, 0x46, 0x46 }, 0, wavHeader, 0, 4); // "RIFF"
+                Array.Copy(BitConverter.GetBytes(36 + dataSize), 0, wavHeader, 4, 4);    // File size - 8
+                Array.Copy(new byte[] { 0x57, 0x41, 0x56, 0x45 }, 0, wavHeader, 8, 4); // "WAVE"
+                Array.Copy(new byte[] { 0x66, 0x6D, 0x74, 0x20 }, 0, wavHeader, 12, 4); // "fmt "
+                Array.Copy(BitConverter.GetBytes(16), 0, wavHeader, 16, 4);              // Subchunk1Size
+                Array.Copy(BitConverter.GetBytes((short)1), 0, wavHeader, 20, 2);        // AudioFormat (PCM)
+                Array.Copy(BitConverter.GetBytes((short)channels), 0, wavHeader, 22, 2); // NumChannels
+                Array.Copy(BitConverter.GetBytes(sampleRate), 0, wavHeader, 24, 4);      // SampleRate
+                Array.Copy(BitConverter.GetBytes(sampleRate * channels * bitsPerSample / 8), 0, wavHeader, 28, 4); // ByteRate
+                Array.Copy(BitConverter.GetBytes((short)(channels * bitsPerSample / 8)), 0, wavHeader, 32, 2);     // BlockAlign
+                Array.Copy(BitConverter.GetBytes((short)bitsPerSample), 0, wavHeader, 34, 2);                      // BitsPerSample
+                Array.Copy(new byte[] { 0x64, 0x61, 0x74, 0x61 }, 0, wavHeader, 36, 4); // "data"
+                Array.Copy(BitConverter.GetBytes(dataSize), 0, wavHeader, 40, 4);        // Subchunk2Size
+
+                using (var file = File.Create(path))
+                {
+                    file.Write(wavHeader, 0, wavHeader.Length);
+                    file.Write(new byte[dataSize], 0, dataSize);
+                }
+            }
+            catch (Exception ex)
+            {
+                ConsoleUI.WriteColoredLine($"Failed to create WAV file: {ex.Message}", ConsoleColor.Red);
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+﻿name: .NET Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    - name: Verify .NET 8 runtime
+      # Use PowerShell Core on the runner to execute the verification script we added
+      run: pwsh -NoProfile -NonInteractive -File scripts/verify-dotnet.ps1
+    - name: Restore
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity normal

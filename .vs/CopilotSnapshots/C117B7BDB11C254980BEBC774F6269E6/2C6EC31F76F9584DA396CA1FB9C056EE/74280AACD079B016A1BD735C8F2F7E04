@@ -1,0 +1,7 @@
+﻿@echo off
+set CONFIG=Debug
+set FRAMEWORK=net8.0
+set PROJ=tests\CyberAwarenessBot.Tests\CyberAwarenessBot.Tests.csproj
+echo Running: dotnet test %PROJ% -c %CONFIG% -f %FRAMEWORK%
+dotnet test %PROJ% -c %CONFIG% -f %FRAMEWORK%
+pause

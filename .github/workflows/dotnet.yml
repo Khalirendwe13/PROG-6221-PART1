@@ -1,0 +1,38 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check greeting WAV exists
+      run: |
+        if [ -f assets/greeting.wav ]; then
+          echo "assets/greeting.wav present"
+        else
+          echo "ERROR: assets/greeting.wav is missing. Add a greeting WAV to assets/greeting.wav or generate one using the provided scripts.";
+          exit 1
+        fi
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    - name: Verify .NET 8 runtime (cross-platform)
+      run: |
+        if ! dotnet --list-runtimes | grep -E "Microsoft\\.NETCore\\.App\s+8\." >/dev/null; then
+          echo "Required .NET 8 runtime not found. Listing installed runtimes:";
+          dotnet --list-runtimes || true;
+          exit 1;
+        fi
+      shell: bash
+    - name: Restore
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore

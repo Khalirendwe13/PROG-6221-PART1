@@ -1,0 +1,153 @@
+﻿using System;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            ConsoleUI.ClearAndDrawHeader();
+
+            // Support a convenience flag to list installed TTS voices on Windows: --list-voices or -l
+            if (args != null && args.Length > 0)
+            {
+                foreach (var a in args)
+                {
+                    if (a.Equals("--list-voices", StringComparison.OrdinalIgnoreCase) || a.Equals("-l", StringComparison.OrdinalIgnoreCase))
+                    {
+                        VoiceGreetingGenerator.ListInstalledVoices();
+                        return;
+                    }
+                    if (a.Equals("--choose-voice", StringComparison.OrdinalIgnoreCase) || a.Equals("-c", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Interactive reconfiguration: list voices and let user enter a choice to persist
+                        VoiceGreetingGenerator.ListInstalledVoices();
+                        ConsoleUI.WriteColoredLine("Enter the exact voice name to save (or press Enter to cancel):", ConsoleColor.Yellow);
+                        string? manual = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(manual))
+                        {
+                            try
+                            {
+                                System.IO.Directory.CreateDirectory("assets");
+                                System.IO.File.WriteAllText(System.IO.Path.Combine("assets", "voice.config"), manual.Trim());
+                                ConsoleUI.WriteColoredLine($"Saved voice: {manual.Trim()}", ConsoleColor.Cyan);
+                            }
+                            catch
+                            {
+                                ConsoleUI.WriteColoredLine("Failed to save voice configuration.", ConsoleColor.Red);
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+
+            // Ensure a greeting WAV exists. Attempt to synthesise a voiced greeting on Windows via
+            // System.Speech (reflection). If that fails, a short silent WAV will be generated.
+            // Use a preferred voice name; change here to use a different installed voice if desired.
+            // Interactive voice selection on first run: if no persisted voice.config exists, probe and ask the user.
+            string assetsDir = "assets";
+            string cfgPath = System.IO.Path.Combine(assetsDir, "voice.config");
+            string? chosenVoice = null;
+            if (!System.IO.File.Exists(cfgPath))
+            {
+                // Probe a preferred voice without creating files
+                var probe = VoiceGreetingGenerator.ProbePreferredVoice("Microsoft Zira Desktop");
+                if (!string.IsNullOrWhiteSpace(probe))
+                {
+                    ConsoleUI.WriteColoredLine($"Detected voice: {probe}", ConsoleColor.Yellow);
+                    ConsoleUI.WriteColoredLine($"Use this voice for greetings? (Y/n)", ConsoleColor.Yellow);
+                    string? ans = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(ans) || ans.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        chosenVoice = probe;
+                        try
+                        {
+                            System.IO.Directory.CreateDirectory(assetsDir);
+                            System.IO.File.WriteAllText(cfgPath, chosenVoice);
+                        }
+                        catch
+                        {
+                            // ignore write errors
+                        }
+                    }
+                    else
+                    {
+                        ConsoleUI.WriteColoredLine("Would you like to list installed voices to choose a different one? (y/N)", ConsoleColor.Yellow);
+                        string? listAns = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(listAns) && listAns.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                        {
+                            VoiceGreetingGenerator.ListInstalledVoices();
+                            ConsoleUI.WriteColoredLine("Enter the exact voice name to use (or press Enter to skip):", ConsoleColor.Yellow);
+                            string? manual = Console.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(manual))
+                            {
+                                chosenVoice = manual.Trim();
+                                try
+                                {
+                                    System.IO.Directory.CreateDirectory(assetsDir);
+                                    System.IO.File.WriteAllText(cfgPath, chosenVoice);
+                                }
+                                catch
+                                {
+                                    // ignore
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            VoiceGreetingGenerator.EnsureVoiceGreetingExists(
+                "assets/greeting.wav",
+                "Hello! Welcome to the Cybersecurity Awareness Bot. I'm here to help you stay safe online.",
+                voiceName: chosenVoice ?? "Microsoft Zira Desktop");
+
+            // Try to start playback (await so audio can begin before text appears).
+            await ConsoleUI.TryPlayGreetingAsync("assets/greeting.wav");
+
+            ConsoleUI.WriteColoredLine("Welcome to the Cybersecurity Awareness Bot!", ConsoleColor.Cyan);
+            ConsoleUI.WriteColoredLine("Please enter your name:", ConsoleColor.Yellow);
+
+            string? name = ConsoleUI.ReadNonEmptyLine("Name");
+            var bot = new Bot { UserName = name };
+
+            ConsoleUI.TypeWrite($"Hello {bot.UserName}! I'm your Cybersecurity Awareness assistant.\n", 25);
+            ConsoleUI.WriteDivider();
+
+            bool running = true;
+            while (running)
+            {
+                ConsoleUI.WriteColoredLine("Ask me a question (or type 'exit' to quit):", ConsoleColor.Green);
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                    continue;
+                }
+
+                input = input.Trim();
+                if (input.Equals("exit", StringComparison.OrdinalIgnoreCase) || input.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                {
+                    running = false;
+                    ConsoleUI.TypeWrite("Goodbye! Stay safe online.\n", 20);
+                    continue;
+                }
+
+                string response = bot.GetResponse(input, out bool handled);
+                if (!handled)
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                }
+                else
+                {
+                    await ConsoleUI.TypeWriteAsync(response + "\n", 18);
+                }
+
+                ConsoleUI.WriteDivider();
+            }
+        }
+    }
+}

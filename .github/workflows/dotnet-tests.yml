@@ -1,0 +1,32 @@
+name: .NET Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    - name: Verify .NET 8 runtime (cross-platform)
+      run: |
+        if ! dotnet --list-runtimes | grep -E "Microsoft\\.NETCore\\.App\s+8\." >/dev/null; then
+          echo "Required .NET 8 runtime not found. Listing installed runtimes:";
+          dotnet --list-runtimes || true;
+          exit 1;
+        fi
+      shell: bash
+    - name: Restore
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity normal

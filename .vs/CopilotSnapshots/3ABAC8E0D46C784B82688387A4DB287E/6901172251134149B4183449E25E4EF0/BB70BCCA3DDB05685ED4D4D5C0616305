@@ -1,0 +1,17 @@
+﻿using System;
+using System.IO;
+
+namespace CyberAwarenessBot.Tools
+{
+    // Simple helper: replace BASE64_WAV with your recorded WAV encoded as base64.
+    public static class WriteGreetingFromBase64
+    {
+        public static void Write(string base64, string outPath = "assets/greeting.wav")
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(outPath) ?? "assets");
+            byte[] data = Convert.FromBase64String(base64);
+            File.WriteAllBytes(outPath, data);
+            Console.WriteLine($"Wrote greeting WAV: {outPath} ({data.Length} bytes)");
+        }
+    }
+}                   

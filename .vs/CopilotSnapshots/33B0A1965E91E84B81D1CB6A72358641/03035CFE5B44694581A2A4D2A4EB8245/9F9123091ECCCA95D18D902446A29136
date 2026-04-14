@@ -1,0 +1,58 @@
+﻿using System;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    internal class Program
+    {
+        static async Task Main(string[] args)
+        {
+            ConsoleUI.ClearAndDrawHeader();
+
+            // Play voice greeting if present (non-blocking)
+            _ = ConsoleUI.TryPlayGreetingAsync("assets/greeting.wav");
+
+            ConsoleUI.WriteColoredLine("Welcome to the Cybersecurity Awareness Bot!", ConsoleColor.Cyan);
+            ConsoleUI.WriteColoredLine("Please enter your name:", ConsoleColor.Yellow);
+
+            string? name = ConsoleUI.ReadNonEmptyLine("Name");
+            var bot = new Bot { UserName = name };
+
+            ConsoleUI.TypeWrite($"Hello {bot.UserName}! I'm your Cybersecurity Awareness assistant.\n", 25);
+            ConsoleUI.WriteDivider();
+
+            bool running = true;
+            while (running)
+            {
+                ConsoleUI.WriteColoredLine("Ask me a question (or type 'exit' to quit):", ConsoleColor.Green);
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                    continue;
+                }
+
+                input = input.Trim();
+                if (input.Equals("exit", StringComparison.OrdinalIgnoreCase) || input.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                {
+                    running = false;
+                    ConsoleUI.TypeWrite("Goodbye! Stay safe online.\n", 20);
+                    continue;
+                }
+
+                string response = bot.GetResponse(input, out bool handled);
+                if (!handled)
+                {
+                    ConsoleUI.WriteColoredLine("I didn't quite understand that. Could you rephrase?", ConsoleColor.Red);
+                }
+                else
+                {
+                    await ConsoleUI.TypeWriteAsync(response + "\n", 18);
+                }
+
+                ConsoleUI.WriteDivider();
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+﻿# Run tests using the dotnet CLI
+Param(
+    [string]$Configuration = "Debug",
+    [string]$Framework = "net8.0"
+)
+$proj = "tests/CyberAwarenessBot.Tests/CyberAwarenessBot.Tests.csproj"
+Write-Host "Running: dotnet test $proj -c $Configuration -f $Framework"
+dotnet test $proj -c $Configuration -f $Framework

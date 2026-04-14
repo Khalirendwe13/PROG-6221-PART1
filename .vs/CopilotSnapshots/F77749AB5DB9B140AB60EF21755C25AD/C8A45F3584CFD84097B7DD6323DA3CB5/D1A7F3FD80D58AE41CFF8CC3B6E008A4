@@ -1,0 +1,100 @@
+﻿using System;
+using System.IO;
+using System.Media;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
+namespace CyberAwarenessBot
+{
+    public static class ConsoleUI
+    {
+        private static readonly string AsciiArt = @"  ____ _               _                      _                       _   _                 _   
+ / ___| |__   ___  ___| | ___  _ __ ___   ___| |_ _ __ ___  ___ _ __ | \ | | ___  _ __   __| |  
+| |   | '_ \ / _ \/ __| |/ _ \| '_ ` _ \ / _ \ __| '__/ _ \/ _ \ '_ \|  \| |/ _ \| '_ \ / _` |  
+| |___| | | |  __/ (__| | (_) | | | | | |  __/ |_| | |  __/  __/ | | | |\  | (_) | | | | (_| |  
+ \____|_| |_|\___|\___|_|\___/|_| |_| |_|\___|\__|_|  \___|\___|_| |_|_| \_|\___/|_| |_|\__,_|  ";
+
+        public static void ClearAndDrawHeader()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine(AsciiArt);
+            Console.ResetColor();
+            WriteDivider();
+        }
+
+        public static void WriteDivider()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(new string('-', 80));
+            Console.ResetColor();
+        }
+
+        public static void WriteColoredLine(string text, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+
+        public static string ReadNonEmptyLine(string fieldName)
+        {
+            while (true)
+            {
+                string? input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input)) return input.Trim();
+                WriteColoredLine($"{fieldName} cannot be empty. Please try again:", ConsoleColor.Red);
+            }
+        }
+
+        /// <summary>
+        /// Try to play a WAV greeting file. Playback uses System.Media.SoundPlayer and is
+        /// only attempted on Windows. The method is safe to call on other platforms and
+        /// will silently return if playback is not supported or the file is missing.
+        /// </summary>
+        public static async Task TryPlayGreetingAsync(string path)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                {
+                    // no audio file, skip
+                    return;
+                }
+
+                // SoundPlayer is a Windows-specific API; only attempt playback on Windows.
+                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    return;
+                }
+
+                using var player = new SoundPlayer(path);
+                // Play asynchronously (non-blocking) and wait a short time so the greeting starts.
+                player.Play();
+                await Task.Delay(1200);
+            }
+            catch
+            {
+                // don't crash if audio playback fails
+            }
+        }
+
+        public static void TypeWrite(string text, int msDelay = 20)
+        {
+            foreach (char c in text)
+            {
+                Console.Write(c);
+                System.Threading.Thread.Sleep(msDelay);
+            }
+        }
+
+        public static async Task TypeWriteAsync(string text, int msDelay = 20)
+        {
+            foreach (char c in text)
+            {
+                Console.Write(c);
+                await Task.Delay(msDelay);
+            }
+        }
+    }
+}

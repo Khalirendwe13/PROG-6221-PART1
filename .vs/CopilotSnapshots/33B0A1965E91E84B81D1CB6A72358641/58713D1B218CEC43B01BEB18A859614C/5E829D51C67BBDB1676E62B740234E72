@@ -1,0 +1,80 @@
+﻿using System;
+using System.IO;
+using System.Reflection;
+
+namespace CyberAwarenessBot
+{
+    public static class VoiceGreetingGenerator
+    {
+        /// <summary>
+        /// Attempt to synthesise a WAV voice greeting using System.Speech.Synthesis via reflection.
+        /// If System.Speech is not available, falls back to creating a silent WAV.
+        /// This approach avoids a compile-time dependency on System.Speech.
+        /// </summary>
+        /// <param name="voiceName">Optional preferred installed voice name, e.g. "Microsoft Zira Desktop".</param>
+        public static void EnsureVoiceGreetingExists(string path, string text, int secondsFallback = 1, string? voiceName = "Microsoft Zira Desktop")
+        {
+            try
+            {
+                var file = new FileInfo(path);
+                if (file.Exists && file.Length > 44) return; // likely valid
+
+                // Try to load System.Speech assembly (Windows desktop).
+                Assembly? asm = null;
+                try
+                {
+                    asm = Assembly.Load("System.Speech");
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                if (asm != null)
+                {
+                    var synthType = asm.GetType("System.Speech.Synthesis.SpeechSynthesizer");
+                    if (synthType != null)
+                    {
+                        var synth = Activator.CreateInstance(synthType);
+                        if (synth != null)
+                        {
+                            // Try to select a preferred voice if provided and supported.
+                            try
+                            {
+                                if (!string.IsNullOrWhiteSpace(voiceName))
+                                {
+                                    var selectVoice = synthType.GetMethod("SelectVoice", new Type[] { typeof(string) });
+                                    selectVoice?.Invoke(synth, new object[] { voiceName });
+                                }
+                            }
+                            catch
+                            {
+                                // ignore selection errors and continue with default voice
+                            }
+
+                            // Set output to wave file
+                            var setOutput = synthType.GetMethod("SetOutputToWaveFile", new Type[] { typeof(string) });
+                            var speak = synthType.GetMethod("Speak", new Type[] { typeof(string) });
+                            var dispose = synthType.GetMethod("Dispose", Type.EmptyTypes);
+
+                            setOutput?.Invoke(synth, new object[] { path });
+                            speak?.Invoke(synth, new object[] { text });
+                            dispose?.Invoke(synth, null);
+
+                            // if file created, return
+                            var created = new FileInfo(path);
+                            if (created.Exists && created.Length > 44) return;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore and fall back
+            }
+
+            // Fallback: create a short silent WAV so playback is safe
+            GreetingGenerator.EnsureGreetingFileExists(path, secondsFallback);
+        }
+    }
+}

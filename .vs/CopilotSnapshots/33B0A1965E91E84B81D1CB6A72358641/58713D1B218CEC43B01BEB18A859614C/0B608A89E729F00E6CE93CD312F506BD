@@ -1,0 +1,139 @@
+﻿using System;
+using System.IO;
+using System.Reflection;
+
+namespace CyberAwarenessBot
+{
+    public static class VoiceGreetingGenerator
+    {
+        /// <summary>
+        /// Attempt to synthesise a WAV voice greeting using System.Speech.Synthesis via reflection.
+        /// If System.Speech is not available, falls back to creating a silent WAV.
+        /// This approach avoids a compile-time dependency on System.Speech.
+        /// </summary>
+        /// <param name="voiceName">Optional preferred installed voice name, e.g. "Microsoft Zira Desktop".</param>
+        public static void EnsureVoiceGreetingExists(string path, string text, int secondsFallback = 1, string? voiceName = "Microsoft Zira Desktop")
+        {
+            try
+            {
+                var file = new FileInfo(path);
+                if (file.Exists && file.Length > 44) return; // likely valid
+
+                // Try to load System.Speech assembly (Windows desktop).
+                Assembly? asm = null;
+                try
+                {
+                    asm = Assembly.Load("System.Speech");
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                if (asm != null)
+                {
+                    var synthType = asm.GetType("System.Speech.Synthesis.SpeechSynthesizer");
+                    if (synthType != null)
+                    {
+                        var synth = Activator.CreateInstance(synthType);
+                        if (synth != null)
+                        {
+                            // Try to select a preferred voice if provided and supported.
+                            try
+                            {
+                                if (!string.IsNullOrWhiteSpace(voiceName))
+                                {
+                                    var selectVoice = synthType.GetMethod("SelectVoice", new Type[] { typeof(string) });
+                                    selectVoice?.Invoke(synth, new object[] { voiceName });
+                                }
+                            }
+                            catch
+                            {
+                                // ignore selection errors and continue with default voice
+                            }
+
+                            // Set output to wave file
+                            var setOutput = synthType.GetMethod("SetOutputToWaveFile", new Type[] { typeof(string) });
+                            var speak = synthType.GetMethod("Speak", new Type[] { typeof(string) });
+                            var dispose = synthType.GetMethod("Dispose", Type.EmptyTypes);
+
+                            setOutput?.Invoke(synth, new object[] { path });
+                            speak?.Invoke(synth, new object[] { text });
+                            dispose?.Invoke(synth, null);
+
+                            // if file created, return
+                            var created = new FileInfo(path);
+                            if (created.Exists && created.Length > 44) return;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore and fall back
+            }
+
+            // Fallback: create a short silent WAV so playback is safe
+            GreetingGenerator.EnsureGreetingFileExists(path, secondsFallback);
+        }
+
+        /// <summary>
+        /// List installed voices (if System.Speech is available). Writes voice names to the console.
+        /// This uses reflection so the project does not require System.Speech at compile time.
+        /// </summary>
+        public static void ListInstalledVoices()
+        {
+            try
+            {
+                var asm = Assembly.Load("System.Speech");
+                if (asm == null)
+                {
+                    Console.WriteLine("System.Speech assembly not available on this platform.");
+                    return;
+                }
+
+                var synthType = asm.GetType("System.Speech.Synthesis.SpeechSynthesizer");
+                if (synthType == null)
+                {
+                    Console.WriteLine("SpeechSynthesizer type not found.");
+                    return;
+                }
+
+                using var synth = Activator.CreateInstance(synthType);
+                if (synth == null)
+                {
+                    Console.WriteLine("Could not create SpeechSynthesizer instance.");
+                    return;
+                }
+
+                var getInstalled = synthType.GetMethod("GetInstalledVoices", Type.EmptyTypes);
+                var voices = getInstalled?.Invoke(synth, null) as System.Collections.IEnumerable;
+                if (voices == null)
+                {
+                    Console.WriteLine("No installed voices discovered.");
+                    return;
+                }
+
+                Console.WriteLine("Installed voices:");
+                foreach (var v in voices)
+                {
+                    // Each item has a VoiceInfo property with Name
+                    var vType = v.GetType();
+                    var voiceInfoProp = vType.GetProperty("VoiceInfo");
+                    var voiceInfo = voiceInfoProp?.GetValue(v);
+                    var infoType = voiceInfo?.GetType();
+                    var nameProp = infoType?.GetProperty("Name");
+                    var name = nameProp?.GetValue(voiceInfo) as string;
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        Console.WriteLine($" - {name}");
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Unable to list installed voices on this platform.");
+            }
+        }
+    }
+}

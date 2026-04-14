@@ -1,0 +1,307 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\VoiceResponseHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\VoiceResponseHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\CybersecurityChatbot\\obj\\CybersecurityChatbot.csproj.nuget.g.props||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\BotTests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:tests\\CyberAwarenessBot.Tests\\BotTests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\TextFile1.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\TextFile1.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\Bot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\Bot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\global.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:global.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\VOICE_EXAMPLES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:VOICE_EXAMPLES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\ConsoleUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\CyberAwarenessBot\\ConsoleUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.github\\workflows\\dotnet.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.github\\workflows\\dotnet.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\COMMIT_MESSAGES.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:COMMIT_MESSAGES.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cde3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WriteGreetingFromBase64.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\WriteGreetingFromBase64.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T13:06:29.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CybersecurityChatbot.csproj.nuget.g.props",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\CybersecurityChatbot\\obj\\CybersecurityChatbot.csproj.nuget.g.props",
+              "RelativeDocumentMoniker": "..\\..\\CybersecurityChatbot\\obj\\CybersecurityChatbot.csproj.nuget.g.props",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\CybersecurityChatbot\\obj\\CybersecurityChatbot.csproj.nuget.g.props",
+              "RelativeToolTip": "..\\..\\CybersecurityChatbot\\obj\\CybersecurityChatbot.csproj.nuget.g.props",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-04-14T12:24:24.014Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SpeechRecognitionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\SpeechRecognitionHandler.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T11:47:10.801Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CyberAwarenessBot.Tests.csproj",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj",
+              "RelativeDocumentMoniker": "tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj",
+              "RelativeToolTip": "tests\\CyberAwarenessBot.Tests\\CyberAwarenessBot.Tests.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-14T11:47:02.691Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VoiceResponseHandler.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\VoiceResponseHandler.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\VoiceResponseHandler.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\VoiceResponseHandler.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\VoiceResponseHandler.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-07T15:49:07.482Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TextFile1.txt",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\TextFile1.txt",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\TextFile1.txt",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\TextFile1.txt",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\TextFile1.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-04-14T13:04:16.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\User.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\User.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\User.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T11:47:07.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BotTests.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\BotTests.cs",
+              "RelativeDocumentMoniker": "tests\\CyberAwarenessBot.Tests\\BotTests.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\BotTests.cs",
+              "RelativeToolTip": "tests\\CyberAwarenessBot.Tests\\BotTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-26T23:06:43.942Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AdditionalBotTests.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs",
+              "RelativeDocumentMoniker": "tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs",
+              "RelativeToolTip": "tests\\CyberAwarenessBot.Tests\\AdditionalBotTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T11:46:57.572Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ConsoleUI.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\ConsoleUI.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\ConsoleUI.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\ConsoleUI.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\ConsoleUI.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T10:10:36.706Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "VOICE_EXAMPLES.md",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\VOICE_EXAMPLES.md",
+              "RelativeDocumentMoniker": "VOICE_EXAMPLES.md",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\VOICE_EXAMPLES.md",
+              "RelativeToolTip": "VOICE_EXAMPLES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-07T15:53:36.827Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Bot.cs",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\Bot.cs",
+              "RelativeDocumentMoniker": "src\\CyberAwarenessBot\\Bot.cs",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\src\\CyberAwarenessBot\\Bot.cs",
+              "RelativeToolTip": "src\\CyberAwarenessBot\\Bot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-26T23:00:53.222Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "global.json",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\global.json",
+              "RelativeDocumentMoniker": "global.json",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\global.json",
+              "RelativeToolTip": "global.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-07T14:34:53.221Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAAwAAAAAAAAAAADwvzYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-03-26T23:01:20.596Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAAEAAAAAAAAAAABRwAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-03-26T23:01:47.286Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "dotnet.yml",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.github\\workflows\\dotnet.yml",
+              "RelativeDocumentMoniker": ".github\\workflows\\dotnet.yml",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\.github\\workflows\\dotnet.yml",
+              "RelativeToolTip": ".github\\workflows\\dotnet.yml",
+              "ViewState": "AgIAABQAAAAAAAAAAIBJwBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2026-03-26T23:01:58.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "COMMIT_MESSAGES.txt",
+              "DocumentMoniker": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\COMMIT_MESSAGES.txt",
+              "RelativeDocumentMoniker": "COMMIT_MESSAGES.txt",
+              "ToolTip": "C:\\Users\\moses\\OneDrive\\Desktop\\poe\\poe\\COMMIT_MESSAGES.txt",
+              "RelativeToolTip": "COMMIT_MESSAGES.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-03-26T23:06:54.562Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
