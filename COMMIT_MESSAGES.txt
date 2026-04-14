@@ -1,0 +1,6 @@
+Initial project skeleton: add ConsoleUI, Bot, and Program with basic chatbot loop
+Add README, gitignore and GitHub Actions workflow (build+test)
+Add greeting WAV generator and ensure playback; implement ASCII header and typing effect
+Expand bot responses and topics; add input validation and fallback responses
+Add unit tests for Bot responses (xUnit) and update CI to run tests
+Polish UI and documentation; add commit messages file and small refactors
